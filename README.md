@@ -1,7 +1,7 @@
-Processamento de Linguagens
+# Processamento de Linguagens
 
-Rui Pedro Guise da Silva - a97133
+* Rui Pedro Guise da Silva - **a97133**
 
-Licenciatura em Engenharia Informática
+**Licenciatura em Engenharia Informática**
 
-Universidade do Minho - 2022/2023
+**Universidade do Minho - 2022/2023**
