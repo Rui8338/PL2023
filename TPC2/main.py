@@ -5,7 +5,7 @@ flag=True
 number=False
 valor=0
 turn=0
-
+print("Digite os numeros que deseja somar:")
 for linha in sys.stdin:
     for n in linha:
         if n.isnumeric(): 
@@ -30,5 +30,3 @@ for linha in sys.stdin:
                     flag=False
             elif n=='=':
                 print(soma)
-
-    
