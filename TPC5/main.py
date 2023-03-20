@@ -16,77 +16,86 @@ class cabine:
             self.estado="LEVANTAR"
         
     def moeda(self,linha):
-        moedas=re.findall(r"\d+[e|c]",linha)
+        if self.estado=="LEVANTAR" or self.estado=="MOEDA": 
+            moedas=re.findall(r"\d+[e|c]",linha)
 
-        moedasvalidas=["1c","2c","5c","10c", "20c", "50c", "1e", "2e"]
-        moedasinvalidas=[]
-        
-        for moeda in moedas:
-            if moeda in moedasvalidas:
-                if moeda == "1c":
-                    self.saldo += 0.01
-                elif moeda == "2c":
-                    self.saldo += 0.02
-                elif moeda == "5c":
-                    self.saldo += 0.05
-                elif moeda == "10c":
-                    self.saldo += 0.1
-                elif moeda == "20c":
-                    self.saldo += 0.2
-                elif moeda == "50c":
-                    self.saldo += 0.5
-                elif moeda == "1e":
-                    self.saldo += 1
+            moedasvalidas=["1c","2c","5c","10c", "20c", "50c", "1e", "2e"]
+            moedasinvalidas=[]
+            
+            for moeda in moedas:
+                if moeda in moedasvalidas:
+                    if moeda == "1c":
+                        self.saldo += 0.01
+                    elif moeda == "2c":
+                        self.saldo += 0.02
+                    elif moeda == "5c":
+                        self.saldo += 0.05
+                    elif moeda == "10c":
+                        self.saldo += 0.1
+                    elif moeda == "20c":
+                        self.saldo += 0.2
+                    elif moeda == "50c":
+                        self.saldo += 0.5
+                    elif moeda == "1e":
+                        self.saldo += 1
+                    else:
+                        self.saldo += 2
                 else:
-                    self.saldo += 2
-            else:
-                moedasinvalidas.append(moeda)
+                    moedasinvalidas.append(moeda)
 
-        if moedasinvalidas != None:
-            print(f"maq: Moeda {moedasinvalidas} inválida. Moedas aceites: 1c, 2c, 5c, 10c, 20c, 50c, 1e, 2e")
-            print(f"maq: Saldo={self.saldo}")
+            if moedasinvalidas != None:
+                print(f"maq: Moeda {moedasinvalidas} inválida. Moedas aceites: 1c, 2c, 5c, 10c, 20c, 50c, 1e, 2e")
+                print(f"maq: Saldo={self.saldo}")
+            self.estado="MOEDA"
+        else:
+            print("maq:Levante o telemovel")
 
     def abortar(self,linha):
         self.troco()
         self.saldo=0
+        self.estado="INICIO"
 
     def telefonema(self,linha):
-        numero = linha[2:]
-    
-        if re.match(r"00\d{9}",numero):
-            if saldo >= 1.5:
-                saldo -= 1.5
-            else:
-                print("maq: Saldo insuficiente para chamada internacional.")
-
-        elif re.match(r"\d{9}",numero):
-            if re.match(r"601", numero) or re.match(r"641", numero):
-                print("maq: Esse número não é permitido neste telefone. Queira discar novo número!")
-
-            elif re.match(r"2", numero):
-                if self.saldo >= 0.25:
-                    self.saldo -= 0.25
-                    print(f"maq: saldo = {self.saldo}")
+        if self.estado=="MOEDA":
+            numero = linha[2:]
+        
+            if re.match(r"00\d{9}",numero):
+                if saldo >= 1.5:
+                    saldo -= 1.5
                 else:
-                    print("maq: Saldo insuficiente para chamada nacional.")
+                    print("maq: Saldo insuficiente para chamada internacional.")
 
-            elif re.match(r"800", numero):
-                None
+            elif re.match(r"\d{9}",numero):
+                if re.match(r"601", numero) or re.match(r"641", numero):
+                    print("maq: Esse número não é permitido neste telefone. Queira discar novo número!")
 
-            elif re.match(r"808", numero):
-                if self.saldo >= 0.1:
-                    self.saldo -= 0.1
+                elif re.match(r"2", numero):
+                    if self.saldo >= 0.25:
+                        self.saldo -= 0.25
+                        print(f"maq: saldo = {self.saldo}")
+                    else:
+                        print("maq: Saldo insuficiente para chamada nacional.")
+
+                elif re.match(r"800", numero):
+                    None
+
+                elif re.match(r"808", numero):
+                    if self.saldo >= 0.1:
+                        self.saldo -= 0.1
+                    else:
+                        print("maq: Saldo insuficiente para chamada azul.")
                 else:
-                    print("maq: Saldo insuficiente para chamada azul.")
+                    print("maq: Número inválido")
             else:
                 print("maq: Número inválido")
         else:
-            print("maq: Número inválido")
+            print("maq: Introduza moedas")
             
 
     def pousar(self,linha):
         self.troco()
         self.saldo=0
+        self.estado="INICIO"
 
     def troco(self):
         troco = self.saldo
