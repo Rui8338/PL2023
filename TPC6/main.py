@@ -32,17 +32,11 @@ tokens = (
     'MAIS',
     'MENORIGUAL',
     'MAIORIAGUAL',
-    'NUM'
+    'NUM',
+    'IN'
 )
 
 t_COMENT=r'/\*(\n|.)*\*/|//.*'
-t_FUNCAO=r'function'
-t_PROGRAMA=r'program'
-t_IDENTIFICADOR=r'[a-zA-Z][a-zA-Z0-9]*'
-t_WHILE=r'while'
-t_FOR=r'for'
-t_PRINT=r'print'
-t_IF=r'if'
 t_APR=r'\['
 t_FPR=r'\]'
 t_AP=r'\('
@@ -64,13 +58,32 @@ t_MENOS=r'-'
 t_MAIS=r'\+'
 t_MENORIGUAL=r'<='
 t_MAIORIAGUAL=r'>='
-t_INT=r'int'
 
 t_ignore = ' \t\n'
 
 def t_NUM(t):
     r'\d+'
     t.value = int(t.value)
+    return t
+
+def t_IDENTIFICADOR(t):
+    r'[a-zA-Z][a-zA-Z0-9]*'
+    if t.value == 'int':
+        t.type = 'INT'
+    elif t.value == 'function':
+        t.type = 'FUNCAO'
+    elif t.value == 'while':
+        t.type = 'WHILE'
+    elif t.value == 'program':
+        t.type = 'PROGRAMA'
+    elif t.value == 'for':
+        t.type = 'FOR'
+    elif t.value == 'in':
+        t.type = 'IN'
+    elif t.value == 'print':
+        t.type = 'PRINT'
+    elif t.value == 'if':
+        t.type = 'IF'
     return t
 
 def t_error(t):
@@ -83,8 +96,5 @@ with open(sys.argv[1], 'r') as file:
     data = file.read()
     lexer.input(data)
 
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break
+    while tok := lexer.token():
         print(tok)
